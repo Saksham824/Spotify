@@ -1,4 +1,5 @@
 import { ChevronLeft, Search, X } from "lucide-react";
+import { Github } from "lucide-react";
 
 export default function TopBar({ searchQuery, setSearchQuery }) {
   return (
@@ -14,11 +15,11 @@ export default function TopBar({ searchQuery, setSearchQuery }) {
         </button>
 
         {/* On mobile, right button is here */}
-        <div className="md:hidden">
-          <button className="bg-gray-800 px-3 py-1 rounded-full text-white text-xs font-medium hover:bg-gray-700 transition">
-            GitHub
-          </button>
-        </div>
+        <div className=" md:flex items-center gap-4">
+        <button className="bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition">
+          <Github size={20} />
+        </button>
+      </div>
       </div>
 
       {/* Search bar */}
@@ -48,8 +49,8 @@ export default function TopBar({ searchQuery, setSearchQuery }) {
 
       {/* Right side buttons (hidden on mobile) */}
       <div className="hidden md:flex items-center gap-4">
-        <button className="bg-gray-800 px-4 py-1.5 rounded-full text-white text-sm font-medium hover:bg-gray-700 transition">
-          GitHub
+        <button className="bg-gray-800 p-2 rounded-full text-white hover:bg-gray-700 transition">
+          <Github size={20} />
         </button>
       </div>
     </header>
