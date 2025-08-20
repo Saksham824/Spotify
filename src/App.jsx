@@ -4,6 +4,7 @@ import Section from "./components/Section";
 import Sidebar from "./components/Sidebar";
 import TopBar from "./components/TopBar";
 import { PlayerContext } from "./PlayerContext";
+import { Play } from "lucide-react";
 
 export default function App() {
   const [tracks, setTracks] = useState([]);
@@ -18,7 +19,9 @@ export default function App() {
       try {
         const query = searchQuery || "punjabi";
         const res = await fetch(
-          `https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}`
+          `https://saavn.dev/api/search/songs?query=${encodeURIComponent(
+            query
+          )}`
         );
         const json = await res.json();
 
@@ -47,7 +50,8 @@ export default function App() {
       title: t.name || t.title,
       subtitle:
         t.primaryArtists ||
-        (t.artists?.primary?.map((a) => a.name).join(", ") || "Unknown Artist"),
+        t.artists?.primary?.map((a) => a.name).join(", ") ||
+        "Unknown Artist",
       audio: t.downloadUrl?.[2]?.url || t.downloadUrl?.[1]?.url || null,
     };
   });
@@ -61,34 +65,48 @@ export default function App() {
         <TopBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
         {/* Greeting & Featured Tracks */}
-        <section className="px-3 sm:px-6 py-4 sm:py-6">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-4">
-            {searchQuery ? `Results for "${searchQuery}"` : "Welcome User"}
-          </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-4">
-            {items.slice(0, 6).map((p, i) => (
-              <div
-                key={i}
-                onClick={() => playTrack(p)}
-                className="flex items-center gap-4 bg-[#232323] rounded-xl hover:bg-[#2a2a2a] transition shadow cursor-pointer p-3 group"
-              >
-                <img
-                  src={p.image}
-                  alt={p.title}
-                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover shadow group-hover:scale-105 transition"
-                />
-                <div className="flex flex-col">
-                  <span className="font-semibold text-base truncate max-w-[120px] sm:max-w-[160px]">
-                    {p.title}
-                  </span>
-                  <span className="text-xs text-gray-400 truncate max-w-[120px] sm:max-w-[160px]">
-                    {p.subtitle}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+<section className="px-3 sm:px-6 py-4 sm:py-6">
+  <h1 className="text-2xl sm:text-3xl font-bold mb-4">
+    {searchQuery ? `Results for "${searchQuery}"` : "Top Songs"}
+  </h1>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-4">
+    {items.slice(0, 6).map((p, i) => (
+      <div
+        key={i}
+        onClick={() => playTrack(p)}   
+        className="flex items-center gap-4 bg-[#232323] rounded-xl hover:bg-[#2a2a2a] transition shadow group p-3 relative cursor-pointer"
+      >
+        {/* Thumbnail */}
+        <img
+          src={p.image}
+          alt={p.title}
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover shadow group-hover:scale-105 transition"
+        />
+
+        {/* Text */}
+        <div className="flex flex-col">
+          <span className="font-semibold text-base truncate max-w-[120px] sm:max-w-[160px]">
+            {p.title}
+          </span>
+          <span className="text-xs text-gray-400 truncate max-w-[120px] sm:max-w-[160px]">
+            {p.subtitle}
+          </span>
+        </div>
+
+        {/* Play Button (Spotify Style) */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); 
+            playTrack(p);
+          }}
+          className="absolute right-4 bg-green-500 rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+        >
+          <Play size={20} className="text-black fill-black" />
+        </button>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* Section: Made for you */}
         <Section title="Made for you" items={items} onPlay={playTrack} />
@@ -100,7 +118,6 @@ export default function App() {
       {/* PlayerBar: fixed at bottom, full width */}
       <div className="fixed bottom-0 left-0 w-full z-50">
         <PlayerBar track={currentTrack} playlist={items} />
-
       </div>
     </div>
   );
